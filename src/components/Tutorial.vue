@@ -27,24 +27,13 @@
         />
       </div>
     </form>
-    <button class="btn btn-primary mr-2 mb-3"
-            v-if="currentTutorial.published_status"
-            @click="updatePublished(false)">
-      Ocultar
-    </button>
-    <button v-else class="btn btn-primary mr-2 mb-3"
-            @click="updatePublished(true)">
-    Publicar
-    </button>
-    <button class="btn btn-danger mr-2 mb-3"
-            @click="deleteTutorial">
-      Borrar
-    </button>
-    <button type="submit" class="btn btn-success mb-3"
-            @click="updateTutorial"
-    >
-      Actualizar
-    </button>
+    <ActionButton v-if="currentTutorial.published_status"
+                  @click="updatePublished(false)"
+                  action="primary" class="mr-2 mb-3">Ocultar</ActionButton>
+    <ActionButton v-else @click="updatePublished(true)"
+                  action="primary" class="mr-2 mb-3">Publicar</ActionButton>
+    <ActionButton @click="deleteTutorial" action="danger" class="mr-2 mb-3">Borrar</ActionButton>
+    <ActionButton @click="updateTutorial" action="success" class="mb-3">Actualizar</ActionButton>
     <p>{{ message }}</p>
   </div>
   <div v-else>
@@ -54,8 +43,11 @@
 </template>
 <script>
 import TutorialDataService from "../services/TutorialDataService";
+import ActionButton from "./slot/ActionButton";
+
 export default {
   name: "TutorialRead",
+  components:{ActionButton},
   data() {
     return {
       currentTutorial: null,

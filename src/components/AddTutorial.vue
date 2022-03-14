@@ -66,25 +66,26 @@
             </label>
           </div>
         </div>
-        <ValidateButton class="block-input" :tutorial="tutorial">Agregar</ValidateButton>
+        <ActionButton @click="saveTutorial" action="success" class="block-input">Agregar</ActionButton>
       </div>
     </div>
     <div v-else>
       <div class="card text-center">
         <div class="card-body">
           <h4>Tutorial agregado correctamente!</h4>
-          <button class="btn btn-success" @click="newTutorial">Agregar otro tutorial</button>
+          <ActionButton @click="newTutorial" action="success">Agregar otro tutorial</ActionButton>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import ValidateButton from "./slot/ValidateButton";
+import TutorialDataService from "../services/TutorialDataService";
+import ActionButton from "./slot/ActionButton";
 
 export default {
   name: "add-tutorial",
-  components: {ValidateButton},
+  components: {ActionButton},
 
   data() {
     return {
@@ -100,6 +101,45 @@ export default {
     };
   },
   methods: {
+    checkForm(){
+      const regex = new RegExp('^(https?:\\/\\/)?'+ // protocol
+          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+          '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+          '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+          '(\\#[-a-z\\d_]*)?$','i');
+      const isValid = regex.test(this.tutorial.video_url)
+      if (this.tutorial.title && isValid){
+        return true;
+      }
+      this.errors = [];
+      if (!this.tutorial.title){
+        this.errors.push("Titulo obligatorio.")
+      }
+      if (!isValid){
+        this.errors.push("URL invalida.")
+      }
+    },
+    saveTutorial() {
+      if (this.checkForm()) {
+        const data = {
+          title: this.tutorial.title,
+          description: this.tutorial.description,
+          video_url: this.tutorial.video_url,
+          published_status: this.tutorial.published_status
+        };
+        TutorialDataService.create(data)
+            .then(response => {
+              this.tutorial.id = response.data.id;
+              console.log(response.data);
+              this.submitted = true;
+            })
+            .catch(e => {
+              console.log(e);
+            });
+      }
+    },
+
     newTutorial() {
       this.submitted = false;
       this.tutorial = {};

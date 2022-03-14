@@ -7,11 +7,7 @@
           <input type="text" class="form-control" placeholder="Buscar tutorial"
                  v-model="title" v-on:keyup.enter="searchTitle"/>
           <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button"
-                    @click="searchTitle"
-            >
-              Buscar
-            </button>
+            <ActionButton @click="searchTitle" action="outline-secondary">Buscar</ActionButton>
           </div>
         </div>
       </div>
@@ -27,28 +23,11 @@
               {{ tutorial.title }}
             </li>
           </ul>
-          <button class="m-3 btn btn-sm btn-danger" @click="removeAllTutorials">
-            Eliminar Todos
-          </button>
+          <ActionButton @click="removeAllTutorials" action="danger" class="btn-sm m-3">Eliminar Todos</ActionButton>
         </div>
         <div class="col-md-8">
           <div v-if="currentTutorial">
-            <h4>Tutorial</h4>
-            <div>
-              <label><strong>Titulo:</strong></label> {{ currentTutorial.title }}
-            </div>
-            <div>
-              <iframe width="580" height="360"
-                      :src="currentTutorial.video_url">
-              </iframe>
-            </div>
-            <div>
-              <label><strong>Descripci&oacute;n:</strong></label> {{ currentTutorial.description }}
-            </div>
-            <div>
-              <label><strong>Estado:</strong></label> {{ currentTutorial.published_status ? "Publicado" : "Pendiente" }}
-            </div>
-              <router-link :to="'/tutorials/' + currentTutorial.id" class="btn btn-warning">Edit</router-link>
+            <DetailTutorial :currentTutorial="currentTutorial" />
           </div>
           <div v-else>
             <h4 class="mb-4">Tutorial</h4>
@@ -72,15 +51,21 @@
     <div class="card text-center">
       <div class="card-body">
         <h4 class="card-title">No hay resultados de busqueda para "{{title}}"</h4>
-        <p class="card-text"><button class="btn btn-link" @click="refreshList"> Mostrar todos</button></p>
+        <p class="card-text">
+          <ActionButton @click="refreshList" action="link">Mostrar todos</ActionButton>
+        </p>
       </div>
     </div>
   </div>
 </template>
 <script>
 import TutorialDataService from "../services/TutorialDataService";
+import ActionButton from "./slot/ActionButton";
+import DetailTutorial from "@/components/DetailTutorial";
+
 export default {
   name: "tutorials-list",
+  components:{DetailTutorial, ActionButton},
   data() {
     return {
       tutorials: [],
