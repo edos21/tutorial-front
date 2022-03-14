@@ -3,6 +3,12 @@
     <div v-if="!submitted">
       <div>
         <h4>Nuevo Tutorial</h4>
+        <div v-if="errors.length">
+          <b>Es necesario corregir los siguientes errores:</b>
+        <ul>
+          <li class="text-danger" v-for="error in errors" :key="error">{{ error }}</li>
+        </ul>
+        </div>
         <div class="form-group">
           <label for="title">Titulo</label>
           <input
@@ -17,7 +23,7 @@
         <div class="form-group">
           <label for="video_url">URL</label>
           <input
-              type="text"
+              type="url"
               class="form-control"
               id="video_url"
               required
@@ -60,7 +66,7 @@
             </label>
           </div>
         </div>
-        <button @click="saveTutorial" class="btn btn-success block-input">Agregar</button>
+        <ValidateButton class="block-input" :tutorial="tutorial">Agregar</ValidateButton>
       </div>
     </div>
     <div v-else>
@@ -74,9 +80,12 @@
   </div>
 </template>
 <script>
-import TutorialDataService from "../services/TutorialDataService";
+import ValidateButton from "./slot/ValidateButton";
+
 export default {
   name: "add-tutorial",
+  components: {ValidateButton},
+
   data() {
     return {
       tutorial: {
@@ -84,30 +93,13 @@ export default {
         title: "",
         description: "",
         video_url: "",
-        published_status: false
+        published_status: false,
       },
+      errors: [],
       submitted: false
     };
   },
   methods: {
-    saveTutorial() {
-      const data = {
-        title: this.tutorial.title,
-        description: this.tutorial.description,
-        video_url: this.tutorial.video_url,
-        published_status: this.tutorial.published_status
-      };
-      TutorialDataService.create(data)
-          .then(response => {
-            this.tutorial.id = response.data.id;
-            console.log(response.data);
-            this.submitted = true;
-          })
-          .catch(e => {
-            console.log(e);
-          });
-    },
-
     newTutorial() {
       this.submitted = false;
       this.tutorial = {};

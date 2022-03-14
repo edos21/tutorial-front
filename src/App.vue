@@ -4,10 +4,10 @@
       <router-link to="/" class="navbar-brand">Edu Test</router-link>
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
-          <router-link to="/tutorials" class="nav-link">Tutorials</router-link>
+          <router-link to="/tutorials" class="nav-link">Tutoriales</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/add" class="nav-link">Add</router-link>
+          <router-link to="/add" class="nav-link">Agregar</router-link>
         </li>
       </div>
     </nav>
